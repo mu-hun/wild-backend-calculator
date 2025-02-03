@@ -14,6 +14,33 @@ public class RequestHandler implements HttpHandler {
 
         System.out.println(method + " " + path);
 
+        if (path.equals("/calculations") && method.equals("POST")) {
+            final String input = new String(exchange.getRequestBody().readAllBytes());
+            String[] values = input.split(" ");
+
+            int a = Integer.parseInt(values[0]);
+            int b = Integer.parseInt(values[2]);
+
+            byte[] result = String.valueOf(a + b).getBytes();
+
+            exchange.sendResponseHeaders(200, result.length);
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(result);
+            }
+            return;
+        }
+
+        if (path.equals("/calculations") && method.equals("GET")) {
+//            TODO: 계산 이력 출력 구현하기
+            exchange.sendResponseHeaders(405, -1);
+            return;
+        }
+
+        if (path.equals("/calculations")) {
+            exchange.sendResponseHeaders(405, -1);
+            return;
+        }
+
         byte[] greeting = getGreeting().getBytes();
 
         exchange.sendResponseHeaders(200, greeting.length);
