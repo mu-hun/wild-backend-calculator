@@ -5,52 +5,50 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RequestHandler implements HttpHandler {
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        String path = exchange.getRequestURI().getPath();
+    private final Map<String, ResourceMethodHandler> handlers = new HashMap<>();
 
-        System.out.println(method + " " + path);
+    public RequestHandler() {
+        handlers.put(HomeGetResource.KEY, new HomeGetResource());
+        handlers.put(CalculationCreateResource.KEY, new CalculationCreateResource());
+    }
 
-        if (path.equals("/calculations") && method.equals("POST")) {
-            final String input = new String(exchange.getRequestBody().readAllBytes());
-            String[] values = input.split(" ");
+    private String getRequestContent(HttpExchange exchange) throws IOException {
+        return new String(exchange.getRequestBody().readAllBytes());
+    }
 
-            int a = Integer.parseInt(values[0]);
-            int b = Integer.parseInt(values[2]);
-
-            byte[] result = String.valueOf(a + b).getBytes();
-
-            exchange.sendResponseHeaders(200, result.length);
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(result);
-            }
-            return;
-        }
-
-        if (path.equals("/calculations") && method.equals("GET")) {
-//            TODO: 계산 이력 출력 구현하기
-            exchange.sendResponseHeaders(405, -1);
-            return;
-        }
-
-        if (path.equals("/calculations")) {
-            exchange.sendResponseHeaders(405, -1);
-            return;
-        }
-
-        byte[] greeting = getGreeting().getBytes();
-
-        exchange.sendResponseHeaders(200, greeting.length);
-
+    private void sendResponseContent(HttpExchange exchange, String responseContent) throws IOException {
+        exchange.sendResponseHeaders(200, responseContent.length());
         try (OutputStream os = exchange.getResponseBody()) {
-            os.write(greeting);
+            os.write(responseContent.getBytes());
         }
     }
 
-    private String getGreeting() {
-        return "Hello World!\n";
+    private String getRequestKey(HttpExchange exchange) {
+        String method = exchange.getRequestMethod();
+        String path = exchange.getRequestURI().getPath();
+        return method + " " + path;
+    }
+
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+        String resultKey = getRequestKey(exchange);
+        System.out.println(resultKey);
+
+        if (!handlers.containsKey(resultKey)) {
+            exchange.sendResponseHeaders(404, -1);
+            return;
+        }
+
+        ResourceMethodHandler handler = handlers.get(resultKey);
+
+        final String requestContent = getRequestContent(exchange);
+        final String responseContent = handler.handle(requestContent);
+
+
+        sendResponseContent(exchange, responseContent);
     }
 }
