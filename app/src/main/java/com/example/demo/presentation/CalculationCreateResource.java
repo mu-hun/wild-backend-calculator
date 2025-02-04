@@ -1,16 +1,28 @@
 package com.example.demo.presentation;
 
+import com.example.demo.application.Calculator;
+import com.example.demo.dto.CalculationRequestDto;
+import com.example.demo.dto.CalculationResponseDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class CalculationCreateResource extends ResourceMethodHandler {
     public final static String KEY = "POST /calculations";
 
-    public String handle(String content) {
-        String[] values = content.split(" ");
+    private final Calculator calculator = new Calculator();
 
-        int a = Integer.parseInt(values[0]);
-        int b = Integer.parseInt(values[2]);
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-        int result = a + b;
+    public String handle(String content) throws JsonProcessingException {
+        CalculationRequestDto requestDto = objectMapper.readValue(content, CalculationRequestDto.class);
 
-        return result + "\n";
+        int result = calculator.calculate(requestDto.a(), requestDto.b(), requestDto.operator());
+
+        return objectMapper.writeValueAsString(new CalculationResponseDto(
+                requestDto.a(),
+                requestDto.b(),
+                requestDto.operator(),
+                result
+        ));
     }
 }

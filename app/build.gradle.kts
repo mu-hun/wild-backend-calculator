@@ -9,6 +9,10 @@ repositories {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+
+
     // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)
 
