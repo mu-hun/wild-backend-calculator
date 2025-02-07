@@ -1,6 +1,7 @@
 package com.example.demo.infrastructure;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CalculationRepository {
@@ -8,7 +9,7 @@ public class CalculationRepository {
     private final List<Calculation> calculations = new ArrayList<>();
 
     protected CalculationRepository() {
-        
+
     }
 
     public static CalculationRepository getInstance() {
@@ -23,6 +24,6 @@ public class CalculationRepository {
     }
 
     public List<Calculation> getAll() {
-        return new ArrayList<>(calculations);
+        return Collections.unmodifiableList(calculations);
     }
 }

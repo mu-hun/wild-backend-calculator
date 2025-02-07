@@ -3,7 +3,7 @@ package com.example.demo.dto;
 import com.example.demo.infrastructure.Calculation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public record CalculationListResponseDto(
@@ -24,6 +24,6 @@ public record CalculationListResponseDto(
 
     @Override
     public List<CalculationResponseDto> calculations() {
-        return new ArrayList<>(calculations);
+        return Collections.unmodifiableList(calculations);
     }
 }
