@@ -1,5 +1,6 @@
 package com.example.demo.presentation;
 
+import com.example.demo.application.Calculator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -12,9 +13,11 @@ public class RequestHandler implements HttpHandler {
     private final Map<String, ResourceMethodHandler> handlers = new HashMap<>();
 
     public RequestHandler() {
+        final Calculator calculator = new Calculator();
+
         handlers.put(HomeGetResource.KEY, new HomeGetResource());
-        handlers.put(CalculationCreateResource.KEY, new CalculationCreateResource());
-        handlers.put(CalculationListResource.KEY, new CalculationListResource());
+        handlers.put(CalculationCreateResource.KEY, new CalculationCreateResource(calculator));
+        handlers.put(CalculationListResource.KEY, new CalculationListResource(calculator));
     }
 
     private String getRequestContent(HttpExchange exchange) throws IOException {

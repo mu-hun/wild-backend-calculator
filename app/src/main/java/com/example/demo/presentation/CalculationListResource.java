@@ -11,12 +11,12 @@ import java.util.List;
 public class CalculationListResource extends ResourceMethodHandler {
     public final static String KEY = "GET /calculations";
 
-    private final Calculator calculator = new Calculator();
-
+    private final Calculator calculator;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public String handle(String content) throws JsonProcessingException {
-        List<Calculation> calculations = calculator.getCalulationList();
+    public CalculationListResource(Calculator calculator) {
+        this.calculator = Objects.requireNonNull(calculator, "calculator는 null일 수 없습니다");
+    }
 
 
         return objectMapper.writeValueAsString(
