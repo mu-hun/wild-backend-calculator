@@ -3,14 +3,11 @@ package com.example.demo.dto;
 import com.example.demo.infrastructure.Calculation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class CalculationListResponseDto implements Serializable {
-    private final List<CalculationResponseDto> calculations;
-
-    public CalculationListResponseDto(List<CalculationResponseDto> calculations) {
-        this.calculations = calculations;
-    }
+public record CalculationListResponseDto(
+        List<CalculationResponseDto> calculations) implements Serializable {
 
     public static CalculationListResponseDto of(List<Calculation> calculations) {
         return new CalculationListResponseDto(calculations.stream()
@@ -25,7 +22,8 @@ public class CalculationListResponseDto implements Serializable {
                 .toList());
     }
 
-    public List<CalculationResponseDto> getCalculations() {
-        return calculations;
+    @Override
+    public List<CalculationResponseDto> calculations() {
+        return new ArrayList<>(calculations);
     }
 }
