@@ -4,6 +4,6 @@ public class HomeGetResource extends ResourceMethodHandler {
     public final static String KEY = "GET /";
 
     public String handle(String content) {
-        return "Hello, World!\n";
+        return "{ \"body\": \"Hello, World!\" }";
     }
 }

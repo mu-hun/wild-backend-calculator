@@ -39,20 +39,43 @@ public class RequestHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String resultKey = getRequestKey(exchange);
-        System.out.println(resultKey);
+        try {
+            String resultKey = getRequestKey(exchange);
 
-        if (!handlers.containsKey(resultKey)) {
-            exchange.sendResponseHeaders(404, -1);
-            return;
+            if (!handlers.containsKey(resultKey)) {
+                sendErrorResponse(exchange, 404, "요청한 리소스를 찾을 수 없습니다");
+                return;
+            }
+
+            ResourceMethodHandler handler = handlers.get(resultKey);
+            final String requestContent = getRequestContent(exchange);
+
+            try {
+                final String responseContent = handler.handle(requestContent);
+                sendSuccessResponse(exchange, responseContent);
+            } catch (Exception e) {
+                sendErrorResponse(exchange, 400, "요청 처리 중 오류가 발생했습니다: " + e.getMessage());
+            }
+        } finally {
+            exchange.close();
         }
-
-        ResourceMethodHandler handler = handlers.get(resultKey);
-
-        final String requestContent = getRequestContent(exchange);
-        final String responseContent = handler.handle(requestContent);
-
-
-        sendResponseContent(exchange, responseContent);
     }
+
+    private void sendSuccessResponse(HttpExchange exchange, String content) throws IOException {
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(200, content.length());
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(content.getBytes());
+        }
+    }
+
+    private void sendErrorResponse(HttpExchange exchange, int statusCode, String message) throws IOException {
+        String errorJson = String.format("{\"error\": \"%s\"}", message);
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(statusCode, errorJson.length());
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(errorJson.getBytes());
+        }
+    }
+
 }
