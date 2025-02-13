@@ -15,6 +15,7 @@ dependencies {
     // Use Spring framework
     implementation("org.springframework:spring-core:6.1.14")
     implementation("org.springframework:spring-context:6.1.14")
+    implementation("org.assertj:assertj-core:3.26.3")
 
     // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)
