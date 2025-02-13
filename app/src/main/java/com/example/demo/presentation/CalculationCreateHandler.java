@@ -6,20 +6,28 @@ import com.example.demo.dto.CalculationResponseDto;
 import com.example.demo.infrastructure.Calculation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
-public class CalculationCreateResource extends ResourceMethodHandler {
-    public final static String KEY = "POST /calculations";
-
+@Component
+public class CalculationCreateHandler extends ResourceMethodHandler {
     private final Calculator calculator;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    public CalculationCreateResource(Calculator calculator) {
-        this.calculator = Objects.requireNonNull(calculator, "calculator는 null일 수 없습니다");
+    public CalculationCreateHandler(
+            Calculator calculator,
+            ObjectMapper objectMapper
+    ) {
+        this.calculator = calculator;
+        this.objectMapper = objectMapper;
     }
 
-    public String handle(String content) throws JsonProcessingException {
+
+    @Override
+    public String key() {
+        return "POST /calculations";
+    }
+
+    public String handle(String content) throws JsonProcessingException, IllegalArgumentException {
         CalculationRequestDto requestDto = objectMapper.readValue(content, CalculationRequestDto.class);
 
         Calculation calculation = calculator.calculate(requestDto.a(), requestDto.b(), requestDto.operator());

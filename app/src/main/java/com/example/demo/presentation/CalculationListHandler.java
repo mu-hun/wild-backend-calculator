@@ -4,18 +4,26 @@ import com.example.demo.application.Calculator;
 import com.example.demo.dto.CalculationListResponseDto;
 import com.example.demo.infrastructure.Calculation;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 
-public class CalculationListResource extends ResourceMethodHandler {
-    public final static String KEY = "GET /calculations";
-
+@Component
+public class CalculationListHandler extends ResourceMethodHandler {
     private final Calculator calculator;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    public CalculationListResource(Calculator calculator) {
-        this.calculator = Objects.requireNonNull(calculator, "calculator는 null일 수 없습니다");
+    public CalculationListHandler(
+            Calculator calculator,
+            ObjectMapper objectMapper
+    ) {
+        this.calculator = calculator;
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public String key() {
+        return "GET /calculations";
     }
 
     public String handle(String content) {

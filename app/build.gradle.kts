@@ -12,6 +12,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
 
+    // Use Spring framework
+    implementation("org.springframework:spring-core:6.1.14")
+    implementation("org.springframework:spring-context:6.1.14")
 
     // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)

@@ -1,23 +1,30 @@
 package com.example.demo.presentation;
 
-import com.example.demo.application.Calculator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class RequestHandler implements HttpHandler {
     private final Map<String, ResourceMethodHandler> handlers = new HashMap<>();
 
-    public RequestHandler() {
-        final Calculator calculator = new Calculator();
+    public RequestHandler(
+            HomeGetHandler homeGetHandler,
+            CalculationCreateHandler calculationCreateHandler,
+            CalculationListHandler calculationListResource
+    ) {
+        addResourceMethodHandler(homeGetHandler);
+        addResourceMethodHandler(calculationCreateHandler);
+        addResourceMethodHandler(calculationListResource);
+    }
 
-        handlers.put(HomeGetResource.KEY, new HomeGetResource());
-        handlers.put(CalculationCreateResource.KEY, new CalculationCreateResource(calculator));
-        handlers.put(CalculationListResource.KEY, new CalculationListResource(calculator));
+    private void addResourceMethodHandler(ResourceMethodHandler handler) {
+        handlers.put(handler.key(), handler);
     }
 
     private String getRequestContent(HttpExchange exchange) throws IOException {
