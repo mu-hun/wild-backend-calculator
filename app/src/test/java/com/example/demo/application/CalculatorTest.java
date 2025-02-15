@@ -1,7 +1,5 @@
-package com.example.demo;
+package com.example.demo.application;
 
-import com.example.demo.application.CalculationRepository;
-import com.example.demo.application.Calculator;
 import com.example.demo.infrastructure.Calculation;
 import com.example.demo.infrastructure.InMemoryCalculationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AppTest {
+class CalculatorTest {
     CalculationRepository calculationRepository;
     Calculator calculator;
 
