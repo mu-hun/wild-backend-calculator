@@ -1,13 +1,18 @@
 package com.example.demo.application;
 
 import com.example.demo.infrastructure.Calculation;
-import com.example.demo.infrastructure.CalculationRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class Calculator {
 
-    private final CalculationRepository calculationRepository = CalculationRepository.getInstance();
+    private final CalculationRepository calculationRepository;
+
+    public Calculator(CalculationRepository calculationRepository) {
+        this.calculationRepository = calculationRepository;
+    }
 
     public Calculation calculate(int a, int b, String operator) {
         if (operator == null) {
